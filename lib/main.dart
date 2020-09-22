@@ -1,116 +1,126 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app_flutter/figures/Point.dart';
-import 'package:mobile_app_flutter/figures/Rectangle.dart';
 
 void main() {
-  runApp(MyApp());
+  // runApp(MyApp()); - sample app (first created)
+
+  runApp(HeroApp());
 }
 
-class MyApp extends StatelessWidget {
+class HeroApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
+    return MaterialApp(initialRoute: '/', routes: {
+      '/': (context) => MainScreen(),
+      '/second': (context) => DetailScreen(),
+      '/third': (context) => SelectionScreen(),
+    });
+  }
+}
 
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+_navigateAndDisplaySelection(BuildContext context) async {
+  // Navigator.push returns a Future that completes after calling
+  // Navigator.pop on the Selection Screen.
+  final result = await Navigator.push(
+    context,
+    // Create the SelectionScreen in the next step.
+    MaterialPageRoute(builder: (context) => SelectionScreen()),
+  );
+
+    Scaffold.of(context)
+    ..removeCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text("$result")));
+}
+
+class MainScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Main Screen'),
+        ),
+        body: Builder(
+          builder: (BuildContext context) => Column(
+            children: [
+              FlatButton(
+                onPressed: () => _navigateAndDisplaySelection(context),
+                child: Text('_navigateAndDisplaySelection'),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  '/second',
+                  arguments: ScreenArguments(
+                    'Extract Arguments Screen',
+                    'This message is extracted in the build method.',
+                  ),
+                ),
+                child: Image.network(
+                  'https://picsum.photos/250?image=9',
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class DetailScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(args.title),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      body: Center(
+        child: Text(args.message),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  Map<String, String> gifts = Map();
-
-  var figures = <Rectangle>[];
-
-  void _incrementCounter() {
-    _createPoint();
-
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _createPoint() {
-    gifts['first'] = 'First Gift';
-
-    print(gifts['first']);
-  
-    Point pOrigin = Point.origin();
-    Point p = Point(0, 0);
-
-    pOrigin.printPoint();
-    p.printPoint();
-
-    print(p == pOrigin);
-  }
-
-  void _createListOfFigures() {
-    figures.add(Rectangle.origin());
-  }
-
-  void _showList() {
-    print('List lenght: ${figures.length}');
-
-    figures.forEach((element) => print(element.toString()));
-  }
-
-  void _addItemToList() => figures.add(Rectangle(5, 5));
-
+class SelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Pick an option'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RaisedButton(
+                onPressed: () {
+                  // Close the screen and return "Yep!" as the result.
+                  Navigator.pop(context, 'Yep!');
+                },
+                child: Text('Yep!'),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            FlatButton(
-              onPressed: _addItemToList,
-              color: Colors.blue,
-              child: Text('Add item to list'),
-            ),
-            FlatButton(
-              onPressed: _createListOfFigures,
-              color: Colors.blue,
-              child: Text('Create list'),
-            ),
-            FlatButton(
-              onPressed: _showList,
-              color: Colors.blue,
-              child: Text('Show list in terminal'),
-            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RaisedButton(
+                onPressed: () {
+                  // Close the screen and return "Nope!" as the result.
+                  Navigator.pop(context, 'Nope.');
+                },
+                child: Text('Nope.'),
+              ),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
   }
+}
+
+class ScreenArguments {
+  final String title;
+  final String message;
+
+  ScreenArguments(this.title, this.message);
 }

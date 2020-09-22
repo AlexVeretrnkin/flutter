@@ -9,4 +9,9 @@ class Square extends Rectangle {
   int getArea() {
     return super.getArea();
   }
+
+  @override
+  String toString() {
+    return 'Square - ${super.toString()}';
+  }
 }
