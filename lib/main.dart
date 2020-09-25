@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pages/menu.dart';
+
 void main() {
   // runApp(MyApp()); - sample app (first created)
 
@@ -13,25 +15,26 @@ class HeroApp extends StatelessWidget {
       '/': (context) => MainScreen(),
       '/second': (context) => DetailScreen(),
       '/third': (context) => SelectionScreen(),
+      '/menu': (context) => Menu()
     });
   }
 }
 
-_navigateAndDisplaySelection(BuildContext context) async {
-  // Navigator.push returns a Future that completes after calling
-  // Navigator.pop on the Selection Screen.
-  final result = await Navigator.push(
-    context,
-    // Create the SelectionScreen in the next step.
-    MaterialPageRoute(builder: (context) => SelectionScreen()),
-  );
+class MainScreen extends StatelessWidget {
+  _navigateAndDisplaySelection(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      // Create the SelectionScreen in the next step.
+      MaterialPageRoute(builder: (context) => SelectionScreen()),
+    );
 
     Scaffold.of(context)
-    ..removeCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text("$result")));
-}
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text("$result")));
+  }
 
-class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +60,10 @@ class MainScreen extends StatelessWidget {
                 child: Image.network(
                   'https://picsum.photos/250?image=9',
                 ),
+              ),
+              MaterialButton(
+                child: Text('Menu'),
+                onPressed: () => Navigator.pushNamed(context, '/menu'),
               ),
             ],
           ),
