@@ -15,7 +15,9 @@ void main() {
 class HeroApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
+    return MaterialApp(theme: ThemeData(
+      brightness: Brightness.dark,
+    ), initialRoute: '/', routes: {
       '/': (context) => MainScreen(),
       '/second': (context) => DetailScreen(),
       '/third': (context) => SelectionScreen(),
