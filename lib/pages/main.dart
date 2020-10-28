@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile_app_flutter/components/previe-list-video-item.dart';
 import 'package:mobile_app_flutter/components/preview-list.dart';
 import 'package:mobile_app_flutter/models/preview-item.dart';
 
 import 'package:mobile_app_flutter/models/screen-arguments.dart';
+import 'package:mobile_app_flutter/providers/preview-item-provider.dart';
+import 'package:provider/provider.dart';
+
 
 import 'selection-screen.dart';
 
@@ -39,112 +40,71 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 50, 42, 38),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    FontAwesomeIcons.music,
-                    color: Colors.red,
-                    size: 20,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 2),
-                    child: Text(
-                      'Main screen',
-                      style: TextStyle(fontSize: 22),
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    FontAwesomeIcons.search,
-                    size: 16,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    margin: EdgeInsets.only(left: 12),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.deepPurple,
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
-                    child: Icon(
-                      FontAwesomeIcons.user,
-                      size: 12,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          )),
-      body: Builder(
-        builder: (BuildContext context) =>
-            SizedBox.expand(
-                child: Container(
-                  color: Color.fromARGB(255, 25, 19, 8),
-                  child: ListView(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: Text('Your favorites', style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              PreviewList(sectionData, height: 140),
-                            ],
-                          ),
+    return Builder(
+      builder: (BuildContext context) =>
+          SizedBox.expand(
+              child: Container(
+                color: Color.fromARGB(255, 25, 19, 8),
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Consumer<PreviewItemProvider>(
+                        builder: (context, cart, child) {
+                          return Text('totalLikes: ' + cart.totalLikes.toString());
+                        }
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Your favorite music videos', style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                )
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            child: Text('Your favorites', style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
                             ),
-                            PreviewList(sectionVideoData, height: 100),
-                          ],
-                        ),
+                          ),
+                          PreviewList(sectionData, height: 140),
+                        ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Your favorite music videos', style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              )
+                          ),
+                          PreviewList(sectionVideoData, height: 100),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
                               margin: EdgeInsets.only(bottom: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('LISTEN AGAIN', style: TextStyle(
                                       fontSize: 12,
-                                    color: Colors.grey
+                                      color: Colors.grey
                                   ),
                                   ),
                                   Text('Your evening music', style: TextStyle(
@@ -153,55 +113,36 @@ class MainScreen extends StatelessWidget {
                                   ),
                                 ],
                               )
+                          ),
+                          PreviewList(sectionData, height: 140),
+                        ],
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () => _navigateAndDisplaySelection(context),
+                      child: Text('_navigateAndDisplaySelection'),
+                    ),
+                    GestureDetector(
+                      onTap: () =>
+                          Navigator.pushNamed(
+                            context,
+                            '/second',
+                            arguments: ScreenArguments(
+                              'Extract Arguments Screen',
+                              'This message is extracted in the build method.',
                             ),
-                            PreviewList(sectionData, height: 140),
-                          ],
-                        ),
+                          ),
+                      child: Image.network(
+                        'https://picsum.photos/250?image=9',
                       ),
-                      FlatButton(
-                        onPressed: () => _navigateAndDisplaySelection(context),
-                        child: Text('_navigateAndDisplaySelection'),
-                      ),
-                      GestureDetector(
-                        onTap: () =>
-                            Navigator.pushNamed(
-                              context,
-                              '/second',
-                              arguments: ScreenArguments(
-                                'Extract Arguments Screen',
-                                'This message is extracted in the build method.',
-                              ),
-                            ),
-                        child: Image.network(
-                          'https://picsum.photos/250?image=9',
-                        ),
-                      ),
-                      MaterialButton(
-                        child: Text('Menu'),
-                        onPressed: () => Navigator.pushNamed(context, '/menu'),
-                      ),
-                    ],
-                  ),
-                )),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color.fromARGB(255, 50, 42, 38),
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                title: Text('Home')
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.explore),
-                title: Text('Explore')
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.library_music),
-                title: Text('Library')
-            ),
-          ]),
+                    ),
+                    MaterialButton(
+                      child: Text('Menu'),
+                      onPressed: () => Navigator.pushNamed(context, '/menu'),
+                    ),
+                  ],
+                ),
+              )),
     );
   }
 }

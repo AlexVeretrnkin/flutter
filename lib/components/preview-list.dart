@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_flutter/components/previe-list-video-item.dart';
 import 'package:mobile_app_flutter/components/preview-list-item.dart';
 import 'package:mobile_app_flutter/models/preview-item.dart';
+import 'package:mobile_app_flutter/providers/preview-item-provider.dart';
+import 'package:provider/provider.dart';
 
 class PreviewList extends StatelessWidget {
   final double height;
@@ -14,19 +16,28 @@ class PreviewList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: this.height,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: this.previewData
-              .map<Widget>(
-                  (PreviewItem item) => item.imageUrl != null ? PreviewListItem(
-                      height: 100,
-                      width: item.width,
-                      previewItem: item
-                  ) : PreviewListVideoItem(videoUrl: item.videoUrl)
-          ).toList()
+    return Consumer<PreviewItemProvider>(
+      builder: (context, value, child) {
+        return Container(
+            height: this.height,
+            child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: this.previewData
+                    .map<Widget>(
+                        (PreviewItem item) => item.imageUrl != null ?
+                    GestureDetector(
+                      child: PreviewListItem(
+                          height: 100,
+                          width: item.width,
+                          previewItem: item
+                      ),
+                      onTap: () => value.like(item),
+                    ):
+                    PreviewListVideoItem(videoUrl: item.videoUrl)
+                ).toList()
 
-        ));
+            ));
+      },
+    );
   }
 }
