@@ -1,18 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile_app_flutter/%20bloc/playlist-bloc.dart';
+import 'package:mobile_app_flutter/enum/option.dart';
 
 import 'package:mobile_app_flutter/models/preview-item.dart';
 import 'package:mobile_app_flutter/models/screen-arguments.dart';
+import 'package:mobile_app_flutter/pages/likes.dart';
+import 'package:mobile_app_flutter/pages/playlist.dart';
 import 'package:mobile_app_flutter/providers/preview-item-provider.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/main.dart';
 import 'pages/menu.dart';
-import 'pages/selection-screen.dart';
+import 'pages/library-screen.dart';
 
-const Map<int, String> Routes = {0: '/', 1: '/second', 2: '/third', 3: '/menu'};
+const Map<int, String> Routes = {0: '/', 1: '/second', 2: '/library', 3: '/menu'};
 
 List<PreviewItem> sectionData = [
   PreviewItem.image(
@@ -115,36 +120,49 @@ class _Main extends State<Main> {
             }
             return true;
           },
-          child: Navigator(
-            key: _navigatorKey,
-            initialRoute: '/',
-            onGenerateRoute: (RouteSettings settings) {
-              WidgetBuilder builder;
-              // Manage your route names here
-              switch (settings.name) {
-                case '/':
-                  builder = (BuildContext context) => MainScreen();
-                  break;
-                case '/second':
-                  builder = (BuildContext context) => DetailScreen();
-                  break;
-                case '/third':
-                  builder = (BuildContext context) => SelectionScreen();
-                  break;
-                case '/menu':
-                  builder = (BuildContext context) => Menu();
-                  break;
-                default:
-                  throw Exception('Invalid route: ${settings.name}');
-              }
-              // You can also return a PageRouteBuilder and
-              // define custom transitions between pages
-              return MaterialPageRoute(
-                builder: builder,
-                settings: settings,
-              );
-            },
-          ),
+          child: BlocProvider(
+            create: (_) => PlaylistBloc(),
+            child: Navigator(
+              key: _navigatorKey,
+              initialRoute: '/',
+              onGenerateRoute: (RouteSettings settings) {
+                WidgetBuilder builder;
+                // Manage your route names here
+                switch (settings.name) {
+                  case '/':
+                    builder = (BuildContext context) => MainScreen();
+                    break;
+                  case '/second':
+                    builder = (BuildContext context) => DetailScreen();
+                    break;
+                  case '/library':
+                    builder = (BuildContext context) => LibraryScreen();
+                    break;
+                  case '/likes':
+                    builder = (BuildContext context) => LikesScreen(Option.like);
+                    break;
+                  case '/dislikes':
+                    builder = (BuildContext context) => LikesScreen(Option.dislike);
+                    break;
+                  case '/playlist':
+                    builder = (BuildContext context) => Playlist();
+                    break;
+                  case '/menu':
+                    builder = (BuildContext context) => Menu();
+                    break;
+                  default:
+                    throw Exception('Invalid route: ${settings.name}');
+                }
+                // You can also return a PageRouteBuilder and
+                // define custom transitions between pages
+                return MaterialPageRoute(
+                  builder: builder,
+                  settings: settings,
+                );
+              },
+            ),
+          )
+
         ),
         bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Color.fromARGB(255, 50, 42, 38),

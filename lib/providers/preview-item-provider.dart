@@ -22,4 +22,14 @@ class PreviewItemProvider extends ChangeNotifier {
     _likedItems.add(item);
     notifyListeners();
   }
+
+  void removeLike(PreviewItem item) {
+    _likedItems.remove(item);
+    notifyListeners();
+  }
+
+  void removeDislike(PreviewItem item) {
+    _dislikedItems.remove(item);
+    notifyListeners();
+  }
 }
