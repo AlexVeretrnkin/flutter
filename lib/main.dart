@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_flutter/%20bloc/playlist-bloc.dart';
 import 'package:mobile_app_flutter/enum/option.dart';
+import 'package:mobile_app_flutter/enum/routes.dart';
 
 import 'package:mobile_app_flutter/models/preview-item.dart';
 import 'package:mobile_app_flutter/models/screen-arguments.dart';
+import 'package:mobile_app_flutter/pages/currency-screen.dart';
 import 'package:mobile_app_flutter/pages/likes.dart';
 import 'package:mobile_app_flutter/pages/playlist.dart';
 import 'package:mobile_app_flutter/providers/preview-item-provider.dart';
@@ -17,7 +19,12 @@ import 'pages/main.dart';
 import 'pages/menu.dart';
 import 'pages/library-screen.dart';
 
-const Map<int, String> Routes = {0: '/', 1: '/second', 2: '/library', 3: '/menu'};
+Map<int, String> bottomNavigationRoutes = {
+  0: Routes['default'],
+  1: Routes['second'],
+  2: Routes['library'],
+  3: Routes['currency'],
+};
 
 List<PreviewItem> sectionData = [
   PreviewItem.image(
@@ -127,34 +134,17 @@ class _Main extends State<Main> {
               initialRoute: '/',
               onGenerateRoute: (RouteSettings settings) {
                 WidgetBuilder builder;
-                // Manage your route names here
-                switch (settings.name) {
-                  case '/':
-                    builder = (BuildContext context) => MainScreen();
-                    break;
-                  case '/second':
-                    builder = (BuildContext context) => DetailScreen();
-                    break;
-                  case '/library':
-                    builder = (BuildContext context) => LibraryScreen();
-                    break;
-                  case '/likes':
-                    builder = (BuildContext context) => LikesScreen(Option.like);
-                    break;
-                  case '/dislikes':
-                    builder = (BuildContext context) => LikesScreen(Option.dislike);
-                    break;
-                  case '/playlist':
-                    builder = (BuildContext context) => Playlist();
-                    break;
-                  case '/menu':
-                    builder = (BuildContext context) => Menu();
-                    break;
-                  default:
-                    throw Exception('Invalid route: ${settings.name}');
-                }
-                // You can also return a PageRouteBuilder and
-                // define custom transitions between pages
+
+                if (settings.name == Routes['default']) builder = (BuildContext context) => MainScreen();
+                if (settings.name == Routes['second']) builder = (BuildContext context) => DetailScreen();
+                if (settings.name == Routes['library']) builder = (BuildContext context) => LibraryScreen();
+                if (settings.name == Routes['likes']) builder = (BuildContext context) => LikesScreen(Option.like);
+                if (settings.name == Routes['dislikes']) builder = (BuildContext context) => LikesScreen(Option.dislike);
+                if (settings.name == Routes['playlist']) builder = (BuildContext context) => Playlist();
+                if (settings.name == Routes['menu']) builder = (BuildContext context) => Menu();
+                if (settings.name == Routes['currency']) builder = (BuildContext context) => CurrencyScreen();
+                if (!Routes.containsValue(settings.name)) throw Exception('Invalid route: ${settings.name}');
+
                 return MaterialPageRoute(
                   builder: builder,
                   settings: settings,
@@ -175,13 +165,9 @@ class _Main extends State<Main> {
                   _selectedIndex = index;
                 });
 
-                _navigatorKey.currentState.pushReplacementNamed(Routes[index]);
+                print(index);
 
-                // if (index == 0 && _navigatorKey.currentState.canPop()) {
-                //   _navigatorKey.currentState.pop();
-                // } else {
-                //   // _navigatorKey.currentState.pushNamedAndRemoveUntil(Routes[index], ModalRoute.withName('/'));
-                // }
+                _navigatorKey.currentState.pushReplacementNamed(bottomNavigationRoutes[index]);
               }
             },
             items: [
@@ -189,10 +175,13 @@ class _Main extends State<Main> {
                   icon: Icon(Icons.home), title: Text('Home')),
               BottomNavigationBarItem(
                 icon: Icon(Icons.explore),
-                title: Text('Explore'),
-              ),
+                title: Text('Explore')),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.library_music), title: Text('Library')),
+                  icon: Icon(Icons.library_music),
+                  title: Text('Library')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.attach_money),
+                  title: Text('Currency')),
             ]),
       ),
     );
@@ -208,10 +197,10 @@ class DetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('args.title'),
+        title: Text(args?.title ?? 'Explore'),
       ),
       body: Center(
-        child: Text('args.title'),
+        child: Text(args?.message ?? 'Explore message'),
       ),
     );
   }

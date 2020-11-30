@@ -6,6 +6,7 @@ import 'package:mobile_app_flutter/enum/option.dart';
 import 'package:mobile_app_flutter/models/preview-item.dart';
 
 import 'package:mobile_app_flutter/models/screen-arguments.dart';
+import 'package:mobile_app_flutter/pages/selection-screen.dart';
 import 'package:mobile_app_flutter/providers/preview-item-provider.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,7 @@ class MainScreen extends StatelessWidget {
     final result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
-      MaterialPageRoute(builder: (context) => LibraryScreen()),
+      MaterialPageRoute(builder: (context) => SelectionScreen()),
     );
 
     Scaffold.of(context)
