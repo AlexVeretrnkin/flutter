@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_flutter/models/currency.dart';
 import 'package:mobile_app_flutter/services/currency.service.dart';
 
+final int animDuration = 500;
+
 class CurrencyScreen extends StatefulWidget {
   CurrencyScreen({Key key}) : super(key: key);
 
@@ -60,35 +62,86 @@ class CurrencyList extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           crossAxisCount: 2,
-          children:
-          this.currencyList.map((e) => CurrencyItem(currency: e)).toList(),
+          children: this
+              .currencyList
+              .map((e) => CurrencyItem(
+                    currency: e,
+                  ))
+              .toList(),
         ));
   }
 }
 
-class CurrencyItem extends StatelessWidget {
+class CurrencyItem extends StatefulWidget {
   final Currency currency;
 
   CurrencyItem({Currency currency}) : this.currency = currency;
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+  _CurrencyItem createState() => _CurrencyItem(currency: this.currency);
+}
 
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(this.currency.txt, textAlign: TextAlign.center,),
-            SizedBox(height: 20,),
-            Text(this.currency.rate.toString()),
-          ],
+class _CurrencyItem extends State<CurrencyItem> {
+  final Currency currency;
+  int dimension = 0;
+  bool componentDisposed = false;
+
+  _CurrencyItem({Currency currency}) : this.currency = currency;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (this.mounted) {
+      Future.delayed(Duration(milliseconds: 500)).then((value) {
+        if (this.mounted && !componentDisposed) {
+          setState(() {
+            dimension = 1000;
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    componentDisposed = true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: AnimatedContainer(
+        height: dimension.toDouble(),
+        width: dimension.toDouble(),
+        duration: Duration(milliseconds: animDuration),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(color: Colors.blueGrey[800]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Center(
+                child: Text(
+                  this.currency.txt,
+                  textAlign: TextAlign.center,
+                ),
+              )),
+              Expanded(
+                  child: Center(
+                child: Text(
+                  this.currency.rate.toString(),
+                  textAlign: TextAlign.center,
+                ),
+              )),
+            ],
+          ),
         ),
-        color: Colors.blueGrey[800],
-      );,
-    )
+      ),
+    );
   }
 }

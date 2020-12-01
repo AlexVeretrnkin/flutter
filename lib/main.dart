@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app_flutter/%20bloc/playlist-bloc.dart';
 import 'package:mobile_app_flutter/enum/option.dart';
 import 'package:mobile_app_flutter/enum/routes.dart';
+import 'package:mobile_app_flutter/models/currency.dart';
 
 import 'package:mobile_app_flutter/models/preview-item.dart';
 import 'package:mobile_app_flutter/models/screen-arguments.dart';
